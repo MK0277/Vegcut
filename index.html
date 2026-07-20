@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vegcut — Fresh Vegetables & Fruits Delivered</title>
+<title>Harvest & Co. — Fresh Vegetables & Fruits Delivered</title>
 <meta name="description" content="Farm-fresh vegetables and fruits delivered to your door. Handpicked daily, delivered with care.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -241,9 +241,25 @@ const fruits = [
   {name:"Seedless Grapes",desc:"Cool, crisp and refreshing — great for snacking any time.",price:"3.90",old:"",badge:"",img:"https://images.unsplash.com/photo-1596363505729-4190a9506133?auto=format&fit=crop&w=600&q=80"},
 ];
 
+function actionHTML(qty){
+  if(qty > 0){
+    return `
+      <div class="qty-stepper">
+        <button class="qty-minus" type="button" aria-label="Decrease quantity">−</button>
+        <span class="qty-value">${qty}</span>
+        <button class="qty-plus" type="button" aria-label="Increase quantity">+</button>
+      </div>`;
+  }
+  return `<button class="add-btn" type="button"><i class="fa-solid fa-basket-shopping"></i>Add</button>`;
+}
+
 function renderGrid(list, targetId){
   const target = document.getElementById(targetId);
-  target.innerHTML = list.map((p,i)=>`
+  const cart = (typeof HarvestCart !== 'undefined') ? HarvestCart.getCart() : [];
+  target.innerHTML = list.map((p,i)=>{
+    const existing = cart.find(c => c.name === p.name);
+    const qty = existing ? existing.qty : 0;
+    return `
     <div class="card reveal reveal-stagger" style="--i:${i}">
       <div class="card-img-wrap">
         <img src="${p.img}" alt="${p.name}" loading="lazy">
@@ -258,11 +274,13 @@ function renderGrid(list, targetId){
             <span class="price-current">$${p.price}</span>
             ${p.old ? `<span class="price-strike">$${p.old}</span>` : ``}
           </div>
-          <button class="add-btn" type="button" data-name="${p.name}" data-price="${p.price}" data-img="${p.img}"><i class="fa-solid fa-basket-shopping"></i>Add</button>
+          <div class="card-actions" data-name="${p.name}" data-price="${p.price}" data-img="${p.img}">
+            ${actionHTML(qty)}
+          </div>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 renderGrid(veggies,'vegGrid');
 renderGrid(fruits,'fruitGrid');
@@ -336,20 +354,36 @@ function refreshCartCount(){
 }
 refreshCartCount();
 
-document.addEventListener('click', (e)=>{
-  const btn = e.target.closest('.add-btn');
-  if(!btn) return;
-  HarvestCart.addItem({
-    name: btn.dataset.name,
-    price: parseFloat(btn.dataset.price),
-    img: btn.dataset.img
-  });
+function bumpCartCount(){
   refreshCartCount();
   cartCountEl.classList.remove('bump'); void cartCountEl.offsetWidth; cartCountEl.classList.add('bump');
-  btn.classList.add('added');
-  const original = btn.innerHTML;
-  btn.innerHTML = '<i class="fa-solid fa-check"></i>Added';
-  setTimeout(()=>{ btn.innerHTML = original; btn.classList.remove('added'); }, 1200);
+}
+
+document.addEventListener('click', (e)=>{
+  const actions = e.target.closest('.card-actions');
+  if(!actions) return;
+  const name = actions.dataset.name;
+  const price = parseFloat(actions.dataset.price);
+  const img = actions.dataset.img;
+  const cart = HarvestCart.getCart();
+  const existing = cart.find(i => i.name === name);
+  const currentQty = existing ? existing.qty : 0;
+
+  if(e.target.closest('.add-btn')){
+    HarvestCart.addItem({name, price, img});
+    actions.innerHTML = actionHTML(1);
+    bumpCartCount();
+  } else if(e.target.closest('.qty-plus')){
+    const newQty = currentQty + 1;
+    HarvestCart.updateQty(name, newQty);
+    actions.innerHTML = actionHTML(newQty);
+    bumpCartCount();
+  } else if(e.target.closest('.qty-minus')){
+    const newQty = currentQty - 1;
+    HarvestCart.updateQty(name, newQty);
+    actions.innerHTML = actionHTML(newQty);
+    bumpCartCount();
+  }
 });
 
 document.addEventListener('click', (e)=>{
