@@ -7,18 +7,18 @@
   "theme_color": "#4CAF50",
   "icons": [
     {
-      "src": "20260720_152003_0000.png",
+      "src": "20260720_150630_0000.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "20260720_150630_0000.png",
+      "src": "20260720_152003_0000.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
   "description": "VegCut is your trusted online store for fresh, hygienically cut vegetables and fruits. Order premium-quality, ready-to-cook vegetables and farm-fresh fruits with just a few taps. Enjoy fast delivery, affordable prices, seasonal offers, and a seamless shopping experience. Save time in the kitchen while getting the freshness you deserve. Install the VegCut app for quick access, easy ordering, real-time updates, and exclusive deals.",
-  "id": "\"id\": \"/vegcut\"",
+  "id": "/Vegcut/",
   "lang": "en",
   "orientation": "any",
   "categories": [
@@ -27,3 +27,12 @@
     "shopping"
   ]
 }
+
+"screenshots": [
+  {
+    "src": "Screenshot_2026-07-20-16-25-28-76_40deb401b9ffe8e1df2f1cc5ba480b12.jpg",
+    "sizes": "1280x720",
+    "type": "image/jpg",
+    "platform": "wide"
+  }
+]
