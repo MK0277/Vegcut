@@ -416,5 +416,18 @@ document.getElementById('toTop').addEventListener('click', ()=>{
 /* ============ FOOTER YEAR ============ */
 document.getElementById('year').textContent = new Date().getFullYear();
 </script>
+
+
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker
+            .register("/Vegcut/service-worker.js")
+            .then(reg => console.log("Service Worker Registered", reg))
+            .catch(err => console.log(err));
+    });
+}
+</script>
 </body>
 </html>
