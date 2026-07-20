@@ -661,16 +661,26 @@ document.getElementById('prevSlide').addEventListener('click', prev);
 resetTimer();
 
 /* ============ CART ============ */
-let cartCount = 0;
 const cartCountEl = document.getElementById('cartCount');
+
+function refreshCartCount(){
+  const cart = HarvestCart.getCart();
+  const total = cart.reduce((sum,item)=>sum+item.qty, 0);
+  cartCountEl.textContent = total;
+}
+refreshCartCount();
+
 document.addEventListener('click', (e)=>{
   const btn = e.target.closest('.add-btn');
   if(!btn) return;
-  cartCount++;
-  cartCountEl.textContent = cartCount;
+  HarvestCart.addItem({
+    name: btn.dataset.name,
+    price: parseFloat(btn.dataset.price),
+    img: btn.dataset.img
+  });
+  refreshCartCount();
   cartCountEl.classList.remove('bump'); void cartCountEl.offsetWidth; cartCountEl.classList.add('bump');
   btn.classList.add('added');
-  const icon = btn.querySelector('i');
   const original = btn.innerHTML;
   btn.innerHTML = '<i class="fa-solid fa-check"></i>Added';
   setTimeout(()=>{ btn.innerHTML = original; btn.classList.remove('added'); }, 1200);
@@ -683,6 +693,8 @@ document.addEventListener('click', (e)=>{
   icon.classList.toggle('fa-regular');
   icon.classList.toggle('fa-solid');
 });
+
+
 
 /* ============ SCROLL REVEAL ============ */
 const io = new IntersectionObserver((entries)=>{
