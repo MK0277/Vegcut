@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart — Vegcut</title>
+<meta name="description" content="Review, adjust and check out the fresh vegetables and fruits in your Vegcut cart.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+
+<style>
+/* ============ CART PAGE ============ */
+.cart-hero{
+  margin-top:78px;padding:64px 0 40px;background:var(--tan);text-align:center;
+}
+.cart-hero .eyebrow{justify-content:center;}
+.cart-hero h1{font-size:clamp(1.9rem,3.6vw,2.6rem);color:var(--green-deep);font-weight:600;}
+.cart-hero p{color:var(--charcoal-soft);margin-top:8px;}
+
+.cart-layout{
+  display:grid;grid-template-columns:1.7fr 1fr;gap:36px;align-items:start;
+  padding:60px 0 100px;
+}
+@media(max-width:900px){.cart-layout{grid-template-columns:1fr;}}
+
+/* item rows */
+.cart-list{display:flex;flex-direction:column;gap:18px;}
+.cart-item{
+  background:var(--white);border-radius:var(--radius-md);box-shadow:var(--shadow-soft);
+  display:flex;align-items:center;gap:18px;padding:16px;
+  transition:transform .4s var(--ease),box-shadow .4s var(--ease),opacity .4s var(--ease);
+}
+.cart-item.removing{opacity:0;transform:translateX(30px) scale(.96);}
+.cart-item-img{width:88px;height:88px;border-radius:16px;overflow:hidden;flex-shrink:0;}
+.cart-item-img img{width:100%;height:100%;object-fit:cover;}
+.cart-item-info{flex:1;min-width:0;}
+.cart-item-name{font-family:'Fraunces',serif;font-weight:600;font-size:1.08rem;color:var(--charcoal);margin-bottom:4px;}
+.cart-item-price{font-size:.85rem;color:var(--charcoal-soft);}
+.cart-item-price span{color:var(--green-deep);font-weight:600;font-family:'Poppins',sans-serif;}
+
+.qty-stepper{
+  display:flex;align-items:center;gap:0;background:var(--tan);border-radius:30px;padding:4px;
+}
+.qty-stepper button{
+  width:30px;height:30px;border-radius:50%;background:var(--white);color:var(--green-deep);
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;
+  transition:background .25s,color .25s,transform .2s;
+}
+.qty-stepper button:hover{background:var(--green-fresh);color:var(--white);}
+.qty-stepper button:active{transform:scale(.9);}
+.qty-value{width:32px;text-align:center;font-family:'Poppins',sans-serif;font-weight:600;font-size:.92rem;}
+
+.line-total{
+  font-family:'Fraunces',serif;font-weight:600;color:var(--green-deep);font-size:1.1rem;
+  min-width:70px;text-align:right;
+}
+.remove-btn{
+  width:36px;height:36px;border-radius:50%;color:var(--charcoal-soft);
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;
+  transition:background .25s,color .25s,transform .3s;
+}
+.remove-btn:hover{background:#fdecec;color:#d9534f;transform:scale(1.08) rotate(6deg);}
+
+@media(max-width:560px){
+  .cart-item{flex-wrap:wrap;}
+  .cart-item-img{width:70px;height:70px;}
+  .line-total{order:5;width:100%;text-align:left;margin-top:6px;}
+}
+
+/* empty state */
+.cart-empty{
+  background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);
+  padding:70px 30px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;
+}
+.cart-empty i{font-size:2.6rem;color:var(--tan);}
+.cart-empty h3{font-family:'Fraunces',serif;font-size:1.4rem;color:var(--green-deep);}
+.cart-empty p{color:var(--charcoal-soft);max-width:320px;font-size:.92rem;line-height:1.6;}
+
+/* summary card */
+.summary-card{
+  background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);
+  padding:28px;position:sticky;top:110px;
+}
+.summary-title{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;color:var(--green-deep);margin-bottom:20px;}
+.summary-row{display:flex;justify-content:space-between;font-size:.92rem;color:var(--charcoal-soft);margin-bottom:14px;}
+.summary-row span:last-child{font-family:'Poppins',sans-serif;font-weight:500;color:var(--charcoal);}
+.summary-divider{height:1px;background:var(--tan);margin:16px 0;}
+.summary-total{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px;}
+.summary-total span:first-child{font-family:'Poppins',sans-serif;font-weight:600;color:var(--charcoal);}
+.summary-total span:last-child{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:600;color:var(--green-deep);}
+.checkout-btn{width:100%;justify-content:center;}
+.checkout-btn:disabled{opacity:.5;pointer-events:none;}
+.continue-link{
+  display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;
+  font-family:'Poppins',sans-serif;font-weight:500;font-size:.88rem;color:var(--green-deep);
+  transition:gap .3s;
+}
+.continue-link:hover{gap:12px;}
+.note-box{
+  margin-top:22px;background:var(--cream);border-radius:var(--radius-sm);padding:14px 16px;
+  font-size:.82rem;color:var(--charcoal-soft);display:flex;gap:10px;line-height:1.5;
+}
+.note-box i{color:var(--green-fresh);margin-top:2px;}
+
+.toast{
+  position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--green-deep);color:var(--white);padding:14px 26px;border-radius:40px;
+  font-family:'Poppins',sans-serif;font-weight:500;font-size:.9rem;box-shadow:0 14px 30px rgba(31,77,58,.3);
+  opacity:0;visibility:hidden;transition:all .4s var(--ease);z-index:1200;display:flex;align-items:center;gap:10px;
+}
+.toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+.toast i{color:#F9D976;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="siteHeader">
+  <div class="container nav-wrap">
+    <a href="index.html#home" class="logo"><span class="logo-mark"><i class="fa-solid fa-leaf"></i></span>Harvest&nbsp;&amp;&nbsp;Co.</a>
+    <nav class="nav-links">
+      <a href="index.html#home">Home</a>
+      <a href="index.html#vegetables">Vegetables</a>
+      <a href="index.html#fruits">Fruits</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+    <div class="nav-right">
+      <a href="cart.html" class="cart-btn" aria-label="View cart" style="background:var(--orange);color:var(--white);">
+        <i class="fa-solid fa-basket-shopping"></i><span class="cart-count" id="cartCount">0</span>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="menu-backdrop" id="menuBackdrop"></div>
+<nav class="mobile-menu" id="mobileMenu">
+  <a href="index.html#home">Home</a>
+  <a href="index.html#vegetables">Vegetables</a>
+  <a href="index.html#fruits">Fruits</a>
+  <a href="index.html#about">About</a>
+  <a href="index.html#contact">Contact</a>
+  <a href="cart.html"><i class="fa-solid fa-basket-shopping" style="margin-right:8px;color:var(--orange);"></i>Cart</a>
+</nav>
+
+<!-- CART HERO -->
+<section class="cart-hero">
+  <div class="container">
+    <span class="eyebrow">Almost there</span>
+    <h1>Your Cart</h1>
+    <p id="cartSubline">Review your picks before checkout.</p>
+  </div>
+</section>
+
+<!-- CART CONTENT -->
+<section>
+  <div class="container">
+    <div class="cart-layout">
+
+      <div id="cartListWrap">
+        <div class="cart-list" id="cartList"></div>
+      </div>
+
+      <aside class="summary-card">
+        <div class="summary-title">Order Summary</div>
+        <div class="summary-row"><span id="summaryCountLabel">0 items</span><span id="summarySubtotal">$0.00</span></div>
+        <div class="summary-row"><span>Delivery fee</span><span id="summaryDelivery">$0.00</span></div>
+        <div class="summary-divider"></div>
+        <div class="summary-total"><span>Total</span><span id="summaryTotal">$0.00</span></div>
+        <button class="btn btn-primary checkout-btn" id="checkoutBtn"><i class="fa-solid fa-lock"></i>Proceed to Checkout</button>
+        <a href="index.html#vegetables" class="continue-link">Continue shopping <i class="fa-solid fa-arrow-right"></i></a>
+        <div class="note-box"><i class="fa-solid fa-circle-info"></i>Free delivery on orders over $30. Orders placed before 4 PM are delivered the same day.</div>
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="container">
+    <div class="footer-grid">
+
+      <div>
+        <div class="footer-logo"><span class="logo-mark"><i class="fa-solid fa-leaf"></i></span>Harvest &amp; Co.</div>
+        <p class="footer-about">Farm-fresh vegetables and fruits, handpicked daily and delivered straight to your door across the city. Freshness you can taste, service you can trust.</p>
+        <div class="social-row">
+          <a href="#" class="social-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="social-icon" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="social-icon" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#" class="social-icon" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+
+      <div>
+        <div class="footer-heading">Quick Links</div>
+        <ul class="footer-links">
+          <li><a href="index.html#home">Home</a></li>
+          <li><a href="index.html#vegetables">Vegetables</a></li>
+          <li><a href="index.html#fruits">Fruits</a></li>
+          <li><a href="index.html#about">About Us</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-heading">Working Hours</div>
+        <ul class="footer-links">
+          <li>Mon – Sat: 6:00 AM – 9:00 PM</li>
+          <li>Sunday: 7:00 AM – 6:00 PM</li>
+          <li>Order online 24/7</li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-heading">Get in Touch</div>
+        <ul class="contact-list">
+          <li><i class="fa-solid fa-phone"></i>+1 (555) 234-7890</li>
+          <li><i class="fa-brands fa-whatsapp"></i>+1 (555) 234-7891</li>
+          <li><i class="fa-solid fa-envelope"></i>hello@harvestandco.com</li>
+          <li><i class="fa-solid fa-location-dot"></i>142 Greenmarket Lane, Willowbrook, NY 10501</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Harvest &amp; Co. All rights reserved.</span>
+      <span>Made with <i class="fa-solid fa-heart" style="color:var(--orange);"></i> for fresh food lovers.</span>
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
+
+<div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastMsg">Cart updated</span></div>
+
+<script src="cart.js"></script>
+<script>
+const cartCountEl = document.getElementById('cartCount');
+const cartList = document.getElementById('cartList');
+const cartListWrap = document.getElementById('cartListWrap');
+const cartSubline = document.getElementById('cartSubline');
+const summaryCountLabel = document.getElementById('summaryCountLabel');
+const summarySubtotal = document.getElementById('summarySubtotal');
+const summaryDelivery = document.getElementById('summaryDelivery');
+const summaryTotal = document.getElementById('summaryTotal');
+const checkoutBtn = document.getElementById('checkoutBtn');
+const toast = document.getElementById('toast');
+const toastMsg = document.getElementById('toastMsg');
+
+const DELIVERY_FLAT = 3.5;
+const FREE_DELIVERY_THRESHOLD = 30;
+
+function money(n){ return '$' + n.toFixed(2); }
+
+function showToast(msg){
+  toastMsg.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>toast.classList.remove('show'), 2200);
+}
+
+function render(){
+  const cart = HarvestCart.getCart();
+  const {itemCount, subtotal} = HarvestCart.totals();
+
+  cartCountEl.textContent = itemCount;
+  cartSubline.textContent = itemCount > 0
+    ? `You have ${itemCount} item${itemCount>1?'s':''} ready for checkout.`
+    : `Your basket is waiting to be filled.`;
+
+  if(cart.length === 0){
+    cartListWrap.innerHTML = `
+      <div class="cart-empty">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <h3>Your cart is empty</h3>
+        <p>Looks like you haven't added any fresh produce yet. Head back and pick out something good.</p>
+        <a href="index.html#vegetables" class="btn btn-primary">Start Shopping <i class="fa-solid fa-arrow-right"></i></a>
+      </div>`;
+  } else {
+    cartListWrap.innerHTML = `<div class="cart-list" id="cartList"></div>`;
+    const list = document.getElementById('cartList');
+    list.innerHTML = cart.map(item => `
+      <div class="cart-item" data-name="${item.name}">
+        <div class="cart-item-img"><img src="${item.img}" alt="${item.name}"></div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-price">$${item.price.toFixed(2)} <span>× ${item.qty}</span></div>
+        </div>
+        <div class="qty-stepper">
+          <button class="qty-minus" aria-label="Decrease quantity">−</button>
+          <span class="qty-value">${item.qty}</span>
+          <button class="qty-plus" aria-label="Increase quantity">+</button>
+        </div>
+        <div class="line-total">${money(item.price * item.qty)}</div>
+        <button class="remove-btn" aria-label="Remove item"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    `).join('');
+  }
+
+  const delivery = (subtotal === 0 || subtotal >= FREE_DELIVERY_THRESHOLD) ? 0 : DELIVERY_FLAT;
+  summaryCountLabel.textContent = `${itemCount} item${itemCount===1?'':'s'}`;
+  summarySubtotal.textContent = money(subtotal);
+  summaryDelivery.textContent = subtotal === 0 ? money(0) : (delivery === 0 ? 'Free' : money(delivery));
+  summaryTotal.textContent = money(subtotal + delivery);
+  checkoutBtn.disabled = cart.length === 0;
+}
+
+render();
+
+document.addEventListener('click', (e)=>{
+  const row = e.target.closest('.cart-item');
+  if(!row) return;
+  const name = row.dataset.name;
+  const cart = HarvestCart.getCart();
+  const item = cart.find(i=>i.name===name);
+  if(!item) return;
+
+  if(e.target.closest('.qty-plus')){
+    HarvestCart.updateQty(name, item.qty + 1);
+    render();
+  }
+  if(e.target.closest('.qty-minus')){
+    if(item.qty <= 1){
+      row.classList.add('removing');
+      setTimeout(()=>{ HarvestCart.updateQty(name, 0); render(); }, 300);
+    }else{
+      HarvestCart.updateQty(name, item.qty - 1);
+      render();
+    }
+  }
+  if(e.target.closest('.remove-btn')){
+    row.classList.add('removing');
+    setTimeout(()=>{
+      HarvestCart.removeItem(name);
+      render();
+      showToast(`${name} removed from cart`);
+    }, 300);
+  }
+});
+
+checkoutBtn.addEventListener('click', ()=>{
+  if(checkoutBtn.disabled) return;
+  showToast('Order placed! We\'ll have it with you soon 🌿');
+  setTimeout(()=>{
+    HarvestCart.clearCart();
+    render();
+  }, 1400);
+});
+
+// keep in sync if cart changes in another tab
+window.addEventListener('storage', render);
+
+/* ============ STICKY HEADER / MENU / TO-TOP (shared behaviour) ============ */
+const header = document.getElementById('siteHeader');
+window.addEventListener('scroll', ()=>{
+  header.classList.toggle('scrolled', window.scrollY > 40);
+  document.getElementById('toTop').classList.toggle('show', window.scrollY > 500);
+});
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+const backdrop = document.getElementById('menuBackdrop');
+function closeMenu(){
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  backdrop.classList.remove('open');
+}
+hamburger.addEventListener('click', ()=>{
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  backdrop.classList.toggle('open');
+});
+backdrop.addEventListener('click', closeMenu);
+mobileMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click', closeMenu));
+document.getElementById('toTop').addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
