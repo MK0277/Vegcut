@@ -1,38 +1,75 @@
 {
-  "name": "Vegcut - Fresh Vegetables &amp; Fruits",
-  "short_name": "Vegcut",
+  "id": "/Vegcut/",
+  "name": "VegCut - Fresh Vegetables & Fruits",
+  "short_name": "VegCut",
+  "description": "VegCut is your trusted online store for fresh, hygienically cut vegetables and fruits. Order premium-quality, ready-to-cook vegetables and farm-fresh fruits with just a few taps. Enjoy fast delivery, affordable prices, seasonal offers, and a seamless shopping experience.",
+  "lang": "en",
+  "dir": "ltr",
   "start_url": "/Vegcut/index.html",
+  "scope": "/Vegcut/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
+  "orientation": "portrait-primary",
   "theme_color": "#4CAF50",
+  "background_color": "#FFFFFF",
+  "categories": [
+    "shopping",
+    "food",
+    "health"
+  ],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "20260720_150630_0000.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "20260720_152003_0000.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
-  "description": "VegCut is your trusted online store for fresh, hygienically cut vegetables and fruits. Order premium-quality, ready-to-cook vegetables and farm-fresh fruits with just a few taps. Enjoy fast delivery, affordable prices, seasonal offers, and a seamless shopping experience. Save time in the kitchen while getting the freshness you deserve. Install the VegCut app for quick access, easy ordering, real-time updates, and exclusive deals.",
-  "id": "/Vegcut/",
-  "lang": "en",
-  "orientation": "any",
-  "categories": [
-    "food",
-    "health",
-    "shopping"
+  "screenshots": [
+    {
+      "src": "Screenshot_2026-07-20-16-25-28-76_40deb401b9ffe8e1df2f1cc5ba480b12.jpg",
+      "sizes": "720x1600",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "Screenshot_2026-07-20-16-25-28-76_40deb401b9ffe8e1df2f1cc5ba480b12.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "platform": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Shop Vegetables",
+      "short_name": "Vegetables",
+      "url": "/Vegcut/index.html#vegetables",
+      "icons": [
+        {
+          "src": "20260720_150630_0000.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Shop Fruits",
+      "short_name": "Fruits",
+      "url": "/Vegcut/index.html#fruits",
+      "icons": [
+        {
+          "src": "20260720_152003_0000.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }
-
-"screenshots": [
-  {
-    "src": "Screenshot_2026-07-20-16-25-28-76_40deb401b9ffe8e1df2f1cc5ba480b12.jpg",
-    "sizes": "1280x720",
-    "type": "image/jpg",
-    "platform": "wide"
-  }
-]
